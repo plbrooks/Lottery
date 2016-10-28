@@ -153,15 +153,7 @@ class SharedServices: NSObject {
      }
      
      
-     //  Update a string STRING by replacing contents KEY that is found in the string with the contents VALUE
      
-     func substituteKeyInString(string: String, key: String, value: String) -> String? {
-     if (string.rangeOfString(key) != nil) {
-     return string.stringByReplacingOccurrencesOfString(key, withString: value)
-     } else {
-     return string
-     }
-     }*/
     
     
     // Show an alert. Message is from message list in the common "Status" file
