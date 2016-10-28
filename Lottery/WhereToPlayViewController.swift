@@ -64,17 +64,13 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
 
             if snapshot.exists() {
                 
-                //let key = snapshot.key
-                //print("key = \(key)")
                 let data = snapshot.value as! [String: [String: String]]
-                //print("data = \(data)")
                 var annotations = [MKPointAnnotation]()
                 for (name, whereToPlayData) in data {
                     
                     let annotation = MKPointAnnotation()
                     let lat = Double(whereToPlayData["lat"]!)
                     let long = Double(whereToPlayData["long"]!)
-                    print("name, lat, long = \(name), \(lat), \(long)")
                     let coordinate  = CLLocationCoordinate2D(latitude: lat!, longitude: long!)
                     annotation.coordinate = coordinate
                     annotation.title = whereToPlayData["name"]

@@ -21,8 +21,6 @@ class SharedServices: NSObject {
         
         let defaults = UserDefaults.standard
         
-        print("save value = \(value)")
-        
         switch value {
         case nil:
             
@@ -58,9 +56,6 @@ class SharedServices: NSObject {
         
         let defaults = UserDefaults.standard
         let value = defaults.object(forKey: key)
-        
-        print("get value = \(value)")
-        
         
         switch value {
         case nil:

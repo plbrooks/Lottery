@@ -82,7 +82,6 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
     func catchCancelNotification (notification: Notification) {
         
         showPickerRow = false
-        //let path = IndexPath(row: 1, section: 0)
         self.tableView.reloadData()
     }
     
@@ -112,11 +111,9 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
         switch component {
         case 0:
             numberOfRows = Public.Var.allCountries.count                             // count = # of countries
-            //print("allCountries = \(Public.Var.allCountries)")
         case 1:
             let countryRow = pickerView.selectedRow(inComponent: 0)     // # of selected Country row
             let countryName = Public.Var.allCountries[countryRow]       // name of selected country
-            print("country name = \(countryName)")
             let divisions : [String]? = Public.Var.allDivisions[countryName]
             if divisions != nil {   // list of divisions for the country
                 numberOfRows = (divisions?.count)!
@@ -124,12 +121,10 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
             else {
                 numberOfRows = 0
             }
-           //print("allDivisions = \(Public.Var.allDivisions)")
         default:
             break
     
         }
-        print("number of rows for component = \(component), \(numberOfRows)")
         return numberOfRows
     }
     
