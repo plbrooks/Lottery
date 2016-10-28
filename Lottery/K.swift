@@ -53,7 +53,6 @@ class K: NSObject {
     // MARK: Notification info keys
     static let gamesDictionary                  = "gamesDictionary"
 
-    
     // Location services constants
     static let US               = "US"
     static let UnitedStates     = "United States"
