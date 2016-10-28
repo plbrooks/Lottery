@@ -24,7 +24,8 @@ class K: NSObject {
     static let oneCivisionPath              = "/divisions/COUNTRY/DIVISION/"
     static let allGamesInDivionPath         = "/games/COUNTRY/division/DIVISION/games/"
     static let allGamesInCountryPath        = "/games/COUNTRY/games/"
-    static let whereToPlayPath              = "/wheretoplay/COUNTRY/"
+    static let whereToPlayCountryPath       = "/wheretoplay/COUNTRY/"
+    static let whereToPlayDivisionPath      = "/wheretoplay/COUNTRY/DIVISION"
     static let COUNTRY                      = "COUNTRY"
     static let DIVISION                     = "DIVISION"
     

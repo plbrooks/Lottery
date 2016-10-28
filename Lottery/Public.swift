@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 public class Public: NSObject {
     
@@ -21,7 +22,8 @@ public class Public: NSObject {
         static let  stateNameFromAbbreviation           =   SharedServices.sharedInstance.stateNameFromAbbreviation
         static let  getLocationAndGetGamesFromFirebase  =   NetworkServices.sharedInstance.getLocationAndGetGamesFromFirebase
         static let  getGamesFromFirebase                =   NetworkServices.sharedInstance.getGamesFromFirebase
-        static let  getPickerLocationsFromFirebase     =   NetworkServices.sharedInstance.getPickerLocationsFromFirebase
+        static let  getPickerLocationsFromFirebase      =   NetworkServices.sharedInstance.getPickerLocationsFromFirebase
+        static let  getMapLocationsFromFirebase         =   NetworkServices.sharedInstance.getMapLocationsFromFirebase
 
     
     struct Var {
@@ -33,6 +35,7 @@ public class Public: NSObject {
 
         static var allCountries = [String]()
         static var allDivisions = [String:[String]]()
+        static var annotations = [MKPointAnnotation]()
         
     }
     

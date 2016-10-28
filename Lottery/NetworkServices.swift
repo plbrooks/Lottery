@@ -10,6 +10,7 @@ import UIKit
 import CoreLocation
 import SwiftLocation
 import Firebase
+import MapKit
 
 
 
@@ -20,9 +21,13 @@ class NetworkServices: NSObject {
     static let sharedInstance = NetworkServices()   // set up shared instance class
     private override init() {}                      // ensure noone will init
 
-    // set up Firebase vars
     
-    var ref: FIRDatabaseReference!
+    // set up Firebase vars
+    var ref: FIRDatabaseReference! = {
+       return FIRDatabase.database().reference()
+    }()
+    
+    
     
     // MARK: funcs
     
@@ -35,7 +40,7 @@ class NetworkServices: NSObject {
                 
                 if foundPlacemark.country != nil {
                     
-                    self.ref = FIRDatabase.database().reference()
+                    //self.ref = FIRDatabase.database().reference()
                     
                     let refKey = self.createRefKey(fromCountryPath: K.oneCountryPath, usingCountry: foundPlacemark.country, fromDivisionPath: nil, usingDivision: nil)
                     
@@ -101,7 +106,7 @@ class NetworkServices: NSObject {
         
         var getError: Error?
         
-        ref = FIRDatabase.database().reference()
+        //ref = FIRDatabase.database().reference()
         
         let country = Public.getValueFromUserDefaultsForKey(K.countryKey) as? String
         let division = Public.getValueFromUserDefaultsForKey(K.divisionKey) as? String
@@ -145,7 +150,7 @@ class NetworkServices: NSObject {
         
         var getError: Error?
         
-        ref = FIRDatabase.database().reference()
+        //ref = FIRDatabase.database().reference()
         
         let refKey = K.allCountriesPath // get all countries
         
@@ -205,7 +210,51 @@ class NetworkServices: NSObject {
         
     }
 
-    
+    func getMapLocationsFromFirebase() throws {  // first inititialization
+        
+        
+        //ref = FIRDatabase.database().reference()
+        
+        let country = Public.getValueFromUserDefaultsForKey(K.countryKey) as? String
+        let division = Public.getValueFromUserDefaultsForKey(K.divisionKey) as? String
+        var refKey = ""
+        if division == nil {
+            refKey = self.createRefKey(fromCountryPath: K.whereToPlayCountryPath, usingCountry: country, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:division)!
+        } else {
+            refKey = self.createRefKey(fromCountryPath: K.whereToPlayDivisionPath, usingCountry: country, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:division)!
+        }
+        
+        ref.child("wheretoplay/United States/Massachusetts/").observe(.value, with: { (snapshot) -> Void in
+            
+            
+            if snapshot.exists() {
+                
+                let data = snapshot.value as! [String: [String: String]]
+                for (_, whereToPlayData) in data {
+                    let annotation = MKPointAnnotation()
+                    print("annotation title = \(annotation.title)")
+                    let lat = Double(whereToPlayData["lat"]!)
+                    let long = Double(whereToPlayData["long"]!)
+                    let coordinate  = CLLocationCoordinate2D(latitude: lat!, longitude: long!)
+                    annotation.coordinate = coordinate
+                    annotation.title = whereToPlayData["name"]
+                    annotation.subtitle = whereToPlayData["address"]!+"\n"+whereToPlayData["city"]!+"\n"+whereToPlayData["state"]!+" "+whereToPlayData["zip"]!
+                    
+                    Public.Var.annotations.append(annotation)
+                    //send notification?
+                }
+                
+            } else {
+                
+                print("no snapshot")
+                return
+            }
+            
+        }) { (error) in
+            print(error.localizedDescription)
+        }
+    }
+  
     
     
     func createRefKey(fromCountryPath: String, usingCountry:String?, fromDivisionPath: String?, usingDivision: String?) -> String? {

@@ -17,13 +17,13 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     
-    var ref: FIRDatabaseReference!
-    var refHandleWhereToPlay: FIRDatabaseHandle!
+    //var ref: FIRDatabaseReference!
+    //var refHandleWhereToPlay: FIRDatabaseHandle!
     
     override func viewDidLoad() {
         
         super.viewDidLoad()
-        ref = FIRDatabase.database().reference()
+        //ref = FIRDatabase.database().reference()
         mapView.delegate = self
         
         //let gestureRecognizer = UITapGestureRecognizer(target: self, action:Selector(("handleTap:")))
@@ -42,7 +42,16 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
-        loadDataFromFirebase()
+        
+        do  {
+            try Public.getMapLocationsFromFirebase()
+        } catch {
+            print("error = \(error.localizedDescription)")
+        }
+        
+        //self.mapView.addAnnotations(Public.Var.annotations)
+        //print("annotations = \(Public.Var.annotations))")
+        //loadDataFromFirebase()
         
         // Do some map housekeeping - set span, center, etc.
         mapView.userTrackingMode = .follow
@@ -55,9 +64,9 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
     }
     
     
-    func loadDataFromFirebase() {  // first inititialization
+    /*func loadDataFromFirebase() {  // first inititialization
         
-        let refKey = "WHERETOPLAY"
+        let refKey = "wheretoplay/United States/Massachusetts/"
         
         refHandleWhereToPlay = self.ref.child(refKey).observe(.value, with: { (snapshot) -> Void in
             
@@ -78,7 +87,9 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
 
                     annotations.append(annotation)
                 }
+                annotations.removeAll()
                 self.mapView.addAnnotations(annotations)
+                print("annotations = \(annotations)")
                 
             } else {
                 
@@ -89,27 +100,27 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         }) { (error) in
             print(error.localizedDescription)
         }
-    }
+    }*/
     
         
-        func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        
+        var pinOnMap = mapView.dequeueReusableAnnotationView(withIdentifier: "PinOnMap") as? MKPinAnnotationView
+        if pinOnMap == nil {
+            pinOnMap = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "MapPin")
+            pinOnMap?.canShowCallout = true
             
-            var pinOnMap = mapView.dequeueReusableAnnotationView(withIdentifier: "PinOnMap") as? MKPinAnnotationView
-            if pinOnMap == nil {
-                pinOnMap = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "MapPin")
-                pinOnMap?.canShowCallout = true
-                
-                let subtitleView = UILabel()
-                subtitleView.font = subtitleView.font.withSize(12)
-                subtitleView.numberOfLines = 0
-                subtitleView.text = annotation.subtitle!
-                pinOnMap!.detailCalloutAccessoryView = subtitleView
-            }
-            else {
-                pinOnMap!.annotation = annotation
-            }
-            return pinOnMap
+            let subtitleView = UILabel()
+            subtitleView.font = subtitleView.font.withSize(12)
+            subtitleView.numberOfLines = 0
+            subtitleView.text = annotation.subtitle!
+            pinOnMap!.detailCalloutAccessoryView = subtitleView
         }
+        else {
+            pinOnMap!.annotation = annotation
+        }
+        return pinOnMap
+    }
         
     
     func mapViewDidStartRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
