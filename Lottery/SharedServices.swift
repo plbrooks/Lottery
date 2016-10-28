@@ -170,7 +170,7 @@ class SharedServices: NSObject {
                 vc!.present(alertView, animated: true, completion: nil)
             })
         }
-    }
+    }*/
     
     // Map activity indicator setup
     

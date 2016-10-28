@@ -23,13 +23,9 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
     var ref: FIRDatabaseReference!
     var refHandleGetLocations: FIRDatabaseHandle!
     
-    //var locationDict = [String: [String]]()
-    //var allLocations = [String: [String]]()
-    //var allCountries = [String]()
     
     var showPickerRow = false
     
-   
     
     // MARK: Initialization functions
     
@@ -40,21 +36,11 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
         NotificationCenter.default.addObserver(forName: Notification.Name(K.saveNotification), object: nil, queue: nil, using: catchSaveNotification)
         NotificationCenter.default.addObserver(forName: Notification.Name(K.cancelNotification), object: nil, queue: nil, using: catchCancelNotification)
         NotificationCenter.default.addObserver(forName: Notification.Name(K.pickerLocationsUpdatedNotification), object: nil, queue: nil, using: catchPickerLocationsUpdatedNotification)
-        //NotificationCenter.default.addObserver(forName: Notification.Name(K.getAllLocationsNotification), object: nil, queue: nil, using: catchUpdateLocationNotification)
-
         
         showPickerRow = false
 
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        /*do {
-            try Public.getPickerlLocationsFromFirebase()
-        } catch {
-        //error
-        }*/
-    }
     
     
     deinit {
@@ -86,25 +72,11 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
         Public.saveToUserDefaultsTheValue(divisionName as String?, K.divisionKey)   // if nil will delete
         
-        //let countryRow = countryNameOfRow(selectedCountry, usingLocationDict: Public.Var.locationDict)
-        //let divisionRow = divisionNameOfRow(selectedDivision, usingCountryRow: selectedCountry, usingLocationDict: Public.Var.locationDict )
-        
-        // need to do same for picker row = row 1?
         let path = IndexPath(row: 0, section: 0)
         self.tableView.reloadRows(at: [path], with: UITableViewRowAnimation.top)
         showPickerRow = false
         tableView.reloadData()
 
-        
-        //Public.Var.lotteryLocation["country"] = Public.Method.getValueFromUserDefaultsForKey(K.countryKey) as? String
-        //Public.Var.lotteryLocation["division"] = Public.Method.getValueFromUserDefaultsForKey(K.divisionKey) as? String
-        
-        //Public.Var.locationDict = [:]
-        //Public.Var.gamesByPayout = []
-        //Public.Var.gamesByPayout = []
-        //Public.Var.gamesByPayout = []
-        //Public.getGamesFromFirebase()
-        
     }
     
     func catchCancelNotification (notification: Notification) {
@@ -119,26 +91,13 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.tableView.reloadData()
     }
 
-    
-    // not caught then user defaults has already been updated
-    /*func catchUpdateLocationNotification (notification: Notification) {
-        
-        let path = IndexPath(row: 0, section: 0)
-        self.tableView.reloadRows(at: [path], with: UITableViewRowAnimation.top)
-        
-    }*/
-    
     override func viewDidDisappear(_ animated: Bool) {
         
         super.viewDidDisappear(animated)
 
     }
     
-    // NOT NEEDED? - don't stay checking for updates
-    // MARK: Firebase data loading
-    
-
-       // MARK: UIPickerView functions
+    // MARK: UIPickerView functions
     
     // Number of pickers in the pickerview. There are 2 - one for countries, one for divisions (e.g. states)
     func numberOfComponents(in: UIPickerView) -> Int {
@@ -179,9 +138,6 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
         
         var rowTitle = ""
         
-        // WHAT IF NOT ALL DATA RECEIVED? SEEMS TO WORK / CALLED MANY TIMES
-        //if Public.Var.locationDict.count > 0 {             // there is a country
-            
             switch component {
             case 0:
                 let sortedCountries = Public.Var.allCountries
@@ -192,8 +148,7 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
                 let countryRow = pickerView.selectedRow(inComponent: 0)
                 let countryName = Public.Var.allCountries[countryRow]
                 
-                //let sortedDivisions = Array(Public.Var.locationDict[countryName]!).sorted(by: <)
-                    rowTitle = divisionNameOfRow(row, usingCountryRow: countryRow, usingDivisionDict: Public.Var.allDivisions )
+                rowTitle = divisionNameOfRow(row, usingCountryRow: countryRow, usingDivisionDict: Public.Var.allDivisions )
                     
             default:
                 break
@@ -339,8 +294,6 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
             name = (Public.Var.allDivisions[countryName]?[ofTitleRow])!
             
         }
-        
-        
         
         return name
     }
