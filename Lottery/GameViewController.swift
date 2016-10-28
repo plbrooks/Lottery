@@ -11,38 +11,6 @@
 
 import UIKit
 import CoreLocation
-//import Firebase
-//import SwiftLocation
-
-/*fileprivate func < <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l < r
-  case (nil, _?):
-    return true
-  default:
-    return false
-  }
-}
-
-fileprivate func >= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l >= r
-  default:
-    return !(lhs < rhs)
-  }
-}
-
-fileprivate func <= <T : Comparable>(lhs: T?, rhs: T?) -> Bool {
-  switch (lhs, rhs) {
-  case let (l?, r?):
-    return l <= r
-  default:
-    return !(rhs < lhs)
-  }
-}*/
-
 
 class GameViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
@@ -78,10 +46,6 @@ class GameViewController: UIViewController, UITableViewDelegate, UITableViewData
         var updateDate          = ""
     }
 
-    //var gameDetail = [String : gameData]()
-    
-    
-    
     var gamesSortedByOddsToWin    : [OddsToWinData] = []               // array of game classes sorted bg OddsToWin
     var gamesSortedByTopPrize     : [TopPrizeData] = []               // array of game classes sorted by maximum prize
     var gamesSortedByPayout       : [PayoutData] = []               // array of game classes sorted by maximum payout
@@ -122,9 +86,6 @@ class GameViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.dataSource    = self
         
         NotificationCenter.default.addObserver(forName: Notification.Name(K.allGamesNotification), object: nil, queue: nil, using: allGamesNotification)
-        //NotificationCenter.default.addObserver(forName: Notification.Name(K.addGameNotification), object: nil, queue: nil, using: addGameNotification)
-        //NotificationCenter.default.addObserver(forName: Notification.Name(K.changeGameNotification), object: nil, queue: nil, using: addGameNotification)
-        //NotificationCenter.default.addObserver(forName: Notification.Name(K.removeGameNotification), object: nil, queue: nil, using: addGameNotification)
         
         
     }
@@ -315,224 +276,9 @@ class GameViewController: UIViewController, UITableViewDelegate, UITableViewData
             gamesSortedByPayout.sort { $0.payout > $1.payout }
             tableView.reloadData()
 
-            
-            
-            // add games to each file
-    
         }
     }
     
-    
-    
-    /*func addGameNotification (notification: Notification) {
-        
-        let snapshot = notification.userInfo?["snapshot"] as! FIRDataSnapshot
-        let gameName = snapshot.key
-        let thisGame = createGameObjectUsingSnapshot(snapshot)
-        
-        // Add game to details and update games arrays
-        gameDetail[gameName] = thisGame
-        addGameSortedByOddsToWin(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        addGameSortedByTopPrize(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        addGameSortedByPayout(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        
-    }
-
-    func changeGameNotification (notification: Notification) {
-    
-        let snapshot = notification.userInfo?["snapshot"] as! FIRDataSnapshot
-        let gameName = snapshot.key
-        let thisGame = createGameObjectUsingSnapshot(snapshot)
-        
-        // Add game to details and update games arrays
-        gameDetail[gameName] = thisGame
-        changeGameSortedByOddsToWin(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        changeGameSortedByTopPrize(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        changeGameSortedByPayout(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-
-    
-    }
-
-    func removeGameNotification (notification: Notification) {
-    
-        let snapshot = notification.userInfo?["snapshot"] as! FIRDataSnapshot
-        let gameName = snapshot.key
-        let thisGame = createGameObjectUsingSnapshot(snapshot)
-        
-        // Add game to details and update games arrays
-        gameDetail[gameName] = thisGame
-        removeGameSortedByOddsToWin(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        removeGameSortedByTopPrize(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-        removeGameSortedByPayout(thisGame, gameName: gameName, tableView: self.tableView, segmentIndex: self.segmentedControl.selectedSegmentIndex)
-
-    
-    }*/
-
-    
-    /*func addGameSortedByOddsToWin (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let thisOddsToWin = Public.sortedByOddsToWin(name: gameName, oddsToWin: thisGame.oddsToWin)
-        
-        var rowNumber = 0
-        
-        // if the new Odds to win > any in the existing array
-        
-        if Public.Var.gamesByOddsToWin.isEmpty || (thisGame.oddsToWin >= (Public.Var.gamesByOddsToWin.last?.oddsToWin)!) {
-            
-            Public.Var.gamesByOddsToWin.append(thisOddsToWin)
-            rowNumber = Public.Var.gamesByOddsToWin.count-1
-            
-        } else {
-            
-            let indexOfFirstGreaterValue = Public.Var.gamesByOddsToWin.index(where: {$0.oddsToWin > thisGame.oddsToWin })
-            Public.Var.gamesByOddsToWin.insert(thisOddsToWin, at: indexOfFirstGreaterValue!)
-            rowNumber = indexOfFirstGreaterValue!
-            
-        }
-        
-        if segmentIndex == segmentOptionIs.oddsToWin {
-            self.tableView.insertRows(at: [IndexPath(row: rowNumber, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-    }
-    
-    func addGameSortedByTopPrize (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let thisTopPrize = Public.sortedByTopPrize(name: gameName, topPrize: thisGame.topPrize)
-        var rowNumber = 0
-        
-        // if the new prize > any in the existing array
-        if  Public.Var.gamesByTopPrize.isEmpty || (thisGame.topPrize <= (Public.Var.gamesByTopPrize.last?.topPrize)!) {
-            Public.Var.gamesByTopPrize.append(thisTopPrize)
-            rowNumber = Public.Var.gamesByTopPrize.count-1
-        } else {
-            
-            let indexOfFirstLowerValue = Public.Var.gamesByTopPrize.index(where: {$0.topPrize < thisGame.topPrize })
-            Public.Var.gamesByTopPrize.insert(thisTopPrize, at: indexOfFirstLowerValue!)
-            rowNumber = indexOfFirstLowerValue!
-            
-        }
-        if segmentIndex == segmentOptionIs.topPrize {
-            self.tableView.insertRows(at: [IndexPath(row: rowNumber, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-    }
-
-    func addGameSortedByPayout (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let thisPayout = Public.sortedByPayout(name: gameName, payout: thisGame.totalWinnings)
-        
-        var rowNumber = 0
-        
-        // if the new prize > any in the existing array
-        
-        if Public.Var.gamesByPayout.isEmpty || (thisGame.totalWinnings <= (Public.Var.gamesByPayout.last?.payout)!) {
-            Public.Var.gamesByPayout.append(thisPayout)
-            rowNumber = Public.Var.gamesByPayout.count-1
-        } else {
-            
-            let indexOfFirstLowerValue = Public.Var.gamesByTopPrize.index(where: {$0.topPrize < thisGame.topPrize })
-            Public.Var.gamesByPayout.insert(thisPayout, at: indexOfFirstLowerValue!)
-            rowNumber = indexOfFirstLowerValue!
-            
-        }
-        
-        if segmentIndex == segmentOptionIs.payout {
-            self.tableView.insertRows(at: [IndexPath(row: rowNumber, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-    }
-
-    // MARK: Change games
-    
-    func changeGameSortedByOddsToWin (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let currentIndex = Public.Var.gamesByOddsToWin.index(where: {$0.name == gameName})                  // find index of current row
-        let newIndex = Public.Var.gamesByOddsToWin.index(where: {$0.oddsToWin >= thisGame.oddsToWin})   // find index of new row
-        
-        let newRow =  Public.sortedByOddsToWin(name:gameName, oddsToWin: thisGame.oddsToWin)
-        
-        Public.Var.gamesByOddsToWin.remove(at: currentIndex!)
-        if segmentIndex == segmentOptionIs.oddsToWin {
-            self.tableView.deleteRows(at: [IndexPath(row: currentIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-        Public.Var.gamesByOddsToWin.insert(newRow, at: newIndex!)
-        if segmentIndex == segmentOptionIs.oddsToWin {
-            self.tableView.insertRows(at: [IndexPath(row: newIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-    }
-    
-    func changeGameSortedByTopPrize (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let currentIndex = Public.Var.gamesByTopPrize.index(where: {$0.name == gameName})                  // find index of current row
-        let newIndex = Public.Var.gamesByTopPrize.index(where: {$0.topPrize <= thisGame.topPrize})   // find index of new row
-        
-        let newRow =  Public.sortedByTopPrize(name:gameName, topPrize:  thisGame.topPrize)
-        
-        Public.Var.gamesByTopPrize.remove(at: currentIndex!)
-        if segmentIndex == segmentOptionIs.topPrize {
-            self.tableView.deleteRows(at: [IndexPath(row: currentIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-        Public.Var.gamesByTopPrize.insert(newRow, at: newIndex!)
-        if segmentIndex == segmentOptionIs.topPrize {
-            self.tableView.insertRows(at: [IndexPath(row: newIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-
-    }
-    
-    func changeGameSortedByPayout (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let currentIndex = Public.Var.gamesByPayout.index(where: {$0.name == gameName})                  // find index of current row
-        let newIndex = Public.Var.gamesByPayout.index(where: {$0.payout <= thisGame.totalWinnings})   // find index of new row
-        
-        let newRow =  Public.sortedByPayout(name:gameName, payout:  thisGame.totalWinnings)
-        
-        Public.Var.gamesByPayout.remove(at: currentIndex!)
-        if segmentIndex == segmentOptionIs.payout {
-            self.tableView.deleteRows(at: [IndexPath(row: currentIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-        Public.Var.gamesByPayout.insert(newRow, at: newIndex!)
-        if segmentIndex == segmentOptionIs.payout {
-            self.tableView.insertRows(at: [IndexPath(row: newIndex!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-
-       
-    }
-
-    // MARK: Move games
-    
-    func removeGameSortedByOddsToWin (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let rowNumber = Public.Var.gamesByOddsToWin.index(where: {$0.name == gameName})
-        Public.Var.gamesByOddsToWin.remove(at: rowNumber!)
-        
-        if segmentIndex == segmentOptionIs.oddsToWin {
-            self.tableView.deleteRows(at: [IndexPath(row: rowNumber!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-    }
-
-    func removeGameSortedByTopPrize (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let rowNumber = Public.Var.gamesByTopPrize.index(where: {$0.name == gameName})
-        Public.Var.gamesByTopPrize.remove(at: rowNumber!)
-        
-        if segmentIndex == segmentOptionIs.topPrize {
-            self.tableView.deleteRows(at: [IndexPath(row: rowNumber!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-    }
-    
-    func removeGameSortedByPayout (_ thisGame: gameData, gameName: String, tableView: UITableView, segmentIndex: Int) {
-        
-        let rowNumber = Public.Var.gamesByPayout.index(where: {$0.name == gameName})
-        Public.Var.gamesByPayout.remove(at: rowNumber!)
-        
-        if segmentIndex == segmentOptionIs.payout {
-            self.tableView.deleteRows(at: [IndexPath(row: rowNumber!, section: 0)], with: UITableViewRowAnimation.automatic)
-        }
-        
-    }*/
     
     // MARK: Create game
     
@@ -555,25 +301,7 @@ class GameViewController: UIViewController, UITableViewDelegate, UITableViewData
         return thisGame
     }
     
-    /*func createGameObjectUsingSnapshot(_ snapshot: FIRDataSnapshot) -> gameData {
-        
-        // Note: Need to downcast all JSON fields. "Segemention fault: 11" error means mismatch between var definition and JSON definition
-        // Numbers with no decimal point in the dict are NSNumbers, with "" are Strings, and with decimal point are Doubles
-        
-        let game = snapshot.value! as! NSDictionary
-        let thisGame = Public.gameData()
-        thisGame.wager = Int(game["Wager"] as! NSNumber)
-        thisGame.topPrize = Int(game["Top Prize"] as! NSNumber)
-        thisGame.oddsToWin = game["Odds To Win"] as! Double
-        thisGame.totalWinners = Int(game["Total Winners"] as! NSNumber)
-        thisGame.totalWinnings = Int(game["Total Winnings"] as! NSNumber)
-        thisGame.oddsToWinTopPrize = Int(game["Odds To Win Top Prize"] as! NSNumber)
-        thisGame.topPrizeDetails = game["Top Prize Details"] as! String
-        thisGame.gameType = game["Type"] as! String
-        thisGame.updateDate = game["Updated"] as! String
-        return thisGame
-    }*/
-    
+       
     // MARK: Convenience funcs
     
     func priceFromInt(_ num: Int) -> String {
