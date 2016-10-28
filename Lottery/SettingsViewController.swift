@@ -146,8 +146,6 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
             case 1:
                 
                 let countryRow = pickerView.selectedRow(inComponent: 0)
-                let countryName = Public.Var.allCountries[countryRow]
-                
                 rowTitle = divisionNameOfRow(row, usingCountryRow: countryRow, usingDivisionDict: Public.Var.allDivisions )
                     
             default:
