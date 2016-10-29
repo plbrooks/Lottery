@@ -20,8 +20,8 @@ class SettingViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     // MARK: var definitions
 
-    var ref: FIRDatabaseReference!
-    var refHandleGetLocations: FIRDatabaseHandle!
+    //var ref: FIRDatabaseReference!
+    //var refHandleGetLocations: FIRDatabaseHandle!
     
     
     var showPickerRow = false

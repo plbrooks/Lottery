@@ -40,8 +40,6 @@ class NetworkServices: NSObject {
                 
                 if foundPlacemark.country != nil {
                     
-                    //self.ref = FIRDatabase.database().reference()
-                    
                     let refKey = self.createRefKey(fromCountryPath: K.oneCountryPath, usingCountry: foundPlacemark.country, fromDivisionPath: nil, usingDivision: nil)
                     
                     self.ref.child(refKey!).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -106,14 +104,7 @@ class NetworkServices: NSObject {
         
         var getError: Error?
         
-        //ref = FIRDatabase.database().reference()
-        
-        let country = Public.getValueFromUserDefaultsForKey(K.countryKey) as? String
-        let division = Public.getValueFromUserDefaultsForKey(K.divisionKey) as? String
-        
-        // country has to exist. division may exist or be nil
-        
-        let refKey = self.createRefKey(fromCountryPath: K.allGamesInCountryPath, usingCountry: country, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:division)
+        let refKey = self.createRefKey(fromCountryPath: K.allGamesInCountryPath, usingCountry: nil, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:nil)
         
         
         ref.child(refKey!).observeSingleEvent(of: .value, with: { (snapshot) in
@@ -149,8 +140,6 @@ class NetworkServices: NSObject {
     func getPickerLocationsFromFirebase() throws {  // first inititialization
         
         var getError: Error?
-        
-        //ref = FIRDatabase.database().reference()
         
         let refKey = K.allCountriesPath // get all countries
         
@@ -212,24 +201,16 @@ class NetworkServices: NSObject {
 
     func getMapLocationsFromFirebase() throws {  // first inititialization
         
+        let refKey = self.createRefKey(fromCountryPath: K.whereToPlayCountryPath, usingCountry: nil, fromDivisionPath:K.whereToPlayDivisionPath,  usingDivision:nil)!
         
-        //ref = FIRDatabase.database().reference()
-        
-        let country = Public.getValueFromUserDefaultsForKey(K.countryKey) as? String
-        let division = Public.getValueFromUserDefaultsForKey(K.divisionKey) as? String
-        var refKey = ""
-        if division == nil {
-            refKey = self.createRefKey(fromCountryPath: K.whereToPlayCountryPath, usingCountry: country, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:division)!
-        } else {
-            refKey = self.createRefKey(fromCountryPath: K.whereToPlayDivisionPath, usingCountry: country, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:division)!
-        }
-        
-        ref.child("wheretoplay/United States/Massachusetts/").observe(.value, with: { (snapshot) -> Void in
-            
+        ref.child(refKey).observe(.value, with: { (snapshot) -> Void in
             
             if snapshot.exists() {
                 
+                print("snapshot value = \(snapshot.value)")
+                
                 let data = snapshot.value as! [String: [String: String]]
+        
                 for (_, whereToPlayData) in data {
                     let annotation = MKPointAnnotation()
                     print("annotation title = \(annotation.title)")
