@@ -35,7 +35,9 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         super.viewWillAppear(animated)
         
         do  {
+            mapView.removeAnnotations(mapView.annotations)
             try Public.getMapLocationsFromFirebase()
+            print("annotations are \(Public.Var.annotations)")
         } catch {
             print("error = \(error.localizedDescription)")
         }
@@ -63,6 +65,7 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
             subtitleView.numberOfLines = 0
             subtitleView.text = annotation.subtitle!
             pinOnMap!.detailCalloutAccessoryView = subtitleView
+            //pinOnMap?.pinTintColor = UIColor.purple
         }
         else {
             pinOnMap!.annotation = annotation

@@ -208,8 +208,6 @@ class NetworkServices: NSObject {
             
             if snapshot.exists() {
                 
-                print("snapshot value = \(snapshot.value)")
-                
                 let data = snapshot.value as! [String: [String: String]]
         
                 for (_, whereToPlayData) in data {
@@ -221,7 +219,6 @@ class NetworkServices: NSObject {
                     annotation.coordinate = coordinate
                     annotation.title = whereToPlayData["name"]
                     annotation.subtitle = whereToPlayData["address"]!+"\n"+whereToPlayData["city"]!+"\n"+whereToPlayData["state"]!+" "+whereToPlayData["zip"]!
-                    
                     Public.Var.annotations.append(annotation)
                     //send notification?
                 }

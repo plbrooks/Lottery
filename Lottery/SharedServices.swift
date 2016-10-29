@@ -168,9 +168,9 @@ class SharedServices: NSObject {
         switch(option) {
         case "START":
             
-            mapView.alpha = 0.25
-            activityIndicator.startAnimating()
+            mapView.alpha = 0.1
             activityIndicator.isHidden = false
+            activityIndicator.startAnimating()
             
         case "FINISH":    // FINISH
             
