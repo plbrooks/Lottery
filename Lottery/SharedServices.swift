@@ -82,11 +82,6 @@ class SharedServices: NSObject {
         
     }
     
-    
-    func deleteFromDefaultsForKey(key: String) {
-    
-    }
-    
     func stateNameFromAbbreviation(abbrev: String?) -> String? {
         
         var name: String? = nil

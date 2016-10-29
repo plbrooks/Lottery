@@ -42,15 +42,16 @@ class NetworkServices: NSObject {
                     
                     let refKey = self.createRefKey(fromCountryPath: K.oneCountryPath, usingCountry: foundPlacemark.country, fromDivisionPath: nil, usingDivision: nil)
                     
-                    self.ref.child(refKey!).observeSingleEvent(of: .value, with: { (snapshot) in
+                    self.ref.child(refKey).observeSingleEvent(of: .value, with: { (snapshot) in
                         if snapshot.exists() {  // country is in Firebase
                             
                             self.saveCountryFrom(placemark: foundPlacemark) // only save if country found in firebase
 
                             let refKey = self.createRefKey(fromCountryPath: K.oneCountryPath, usingCountry: foundPlacemark.country, fromDivisionPath:K.oneCivisionPath, usingDivision:foundPlacemark.administrativeArea)
                             
-                            self.ref.child(refKey!).observeSingleEvent(of: .value, with: { (snapshot) in
+                            self.ref.child(refKey).observeSingleEvent(of: .value, with: { (snapshot) in
                                 if snapshot.exists() {  // division exists
+                                    
                                     self.saveDivisionFrom(placemark: foundPlacemark)
                                 }   // if divison does not exist don't save it
                                 
@@ -107,7 +108,7 @@ class NetworkServices: NSObject {
         let refKey = self.createRefKey(fromCountryPath: K.allGamesInCountryPath, usingCountry: nil, fromDivisionPath:K.allGamesInDivionPath,  usingDivision:nil)
         
         
-        ref.child(refKey!).observeSingleEvent(of: .value, with: { (snapshot) in
+        ref.child(refKey).observeSingleEvent(of: .value, with: { (snapshot) in
             if snapshot.exists() {
                 
                 if snapshot.key == K.descrip {
@@ -201,7 +202,7 @@ class NetworkServices: NSObject {
 
     func getMapLocationsFromFirebase() throws {  // first inititialization
         
-        let refKey = self.createRefKey(fromCountryPath: K.whereToPlayCountryPath, usingCountry: nil, fromDivisionPath:K.whereToPlayDivisionPath,  usingDivision:nil)!
+        let refKey = self.createRefKey(fromCountryPath: K.whereToPlayCountryPath, usingCountry: nil, fromDivisionPath:K.whereToPlayDivisionPath,  usingDivision:nil)
         
         ref.child(refKey).observe(.value, with: { (snapshot) -> Void in
             
@@ -236,12 +237,13 @@ class NetworkServices: NSObject {
         }
     }
   
-    
-    
-    func createRefKey(fromCountryPath: String, usingCountry:String?, fromDivisionPath: String?, usingDivision: String?) -> String? {
-        
-        var refKey: String?
+    //func createRefKey(fromCountryPath: String, usingCountry:String?, fromDivisionPath: String?, usingDivision: String?) -> String? {
 
+    
+    func createRefKey(fromCountryPath: String, usingCountry:String?, fromDivisionPath: String?, usingDivision: String?) -> String {
+        
+        var refKey = ""
+        
         // set up country and division vars
         var country: String? = nil
         var division: String? = nil
@@ -269,11 +271,11 @@ class NetworkServices: NSObject {
         
         if country != nil {
             
-            refKey = substituteKeyInString(fromCountryPath, key: K.COUNTRY, value: country!)
+            refKey = substituteKeyInString(fromCountryPath, key: K.COUNTRY, value: country!)!
             if division != nil {
                 
-                refKey = substituteKeyInString(fromDivisionPath!, key: K.COUNTRY, value: country!)
-                refKey = substituteKeyInString(refKey!, key: K.DIVISION, value: division!)
+                refKey = substituteKeyInString(fromDivisionPath!, key: K.COUNTRY, value: country!)!
+                refKey = substituteKeyInString(refKey, key: K.DIVISION, value: division!)!
                 
             }
         }
@@ -283,7 +285,7 @@ class NetworkServices: NSObject {
     
     //  Update a string STRING by replacing contents KEY that is found in the string with the contents VALUE
 
-    func substituteKeyInString(_ string: String, key: String, value: String) -> String? {
+   func substituteKeyInString(_ string: String, key: String, value: String) -> String? {
         if (string.range(of: key) != nil) {
             return string.replacingOccurrences(of: key, with: value)
         } else {
