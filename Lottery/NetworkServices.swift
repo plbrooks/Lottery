@@ -220,9 +220,8 @@ class NetworkServices: NSObject {
                     annotation.title = whereToPlayData["name"]
                     annotation.subtitle = whereToPlayData["address"]!+"\n"+whereToPlayData["city"]!+"\n"+whereToPlayData["state"]!+" "+whereToPlayData["zip"]!
                     Public.Var.annotations.append(annotation)
-                    //send notification?
                 }
-                
+                NotificationCenter.default.post(name: Notification.Name(K.whereToPlayLocationsNotification), object: nil, userInfo: nil)
             } else {
                 
                 print("no snapshot")

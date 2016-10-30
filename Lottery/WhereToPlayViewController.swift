@@ -20,9 +20,27 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         
         super.viewDidLoad()
         mapView.delegate = self
+        mapView.showsUserLocation = true
+        NotificationCenter.default.addObserver(forName: Notification.Name(K.whereToPlayLocationsNotification), object: nil, queue: nil, using: whereToPlayNotification)
+        
+    }
+    
+
+    deinit {
+        
+        NotificationCenter.default.removeObserver(self)
+        
+    }
+    
+    func whereToPlayNotification (notification: Notification) {
+        
+        self.mapView.addAnnotations(Public.Var.annotations)
         
     }
 
+    
+    
+    
     override func didReceiveMemoryWarning() {
         
         super.didReceiveMemoryWarning()
@@ -37,19 +55,25 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         do  {
             mapView.removeAnnotations(mapView.annotations)
             try Public.getMapLocationsFromFirebase()
-            print("annotations are \(Public.Var.annotations)")
         } catch {
             print("error = \(error.localizedDescription)")
         }
         
-        self.mapView.addAnnotations(Public.Var.annotations)
+                        // show the map
+
+    }
+    
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
         
         // Do some map housekeeping - set span, center, etc.
         mapView.userTrackingMode = .follow
         let span = MKCoordinateSpanMake(2.0,2.0)                        // set reasonable granularity
         let region = MKCoordinateRegion(center: mapView.userLocation.coordinate , span: span ) // center map
-        mapView.setRegion(region, animated: true)                  // show the map
-
+        mapView.setRegion(region, animated: false)                  // show the map
+        
     }
     
 
@@ -59,6 +83,10 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         if pinOnMap == nil {
             pinOnMap = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "MapPin")
             pinOnMap?.canShowCallout = true
+            if pinOnMap == mapView.userLocation {
+                pinOnMap?.pinTintColor = UIColor.purple
+            }
+            
             
             let subtitleView = UILabel()
             subtitleView.font = subtitleView.font.withSize(12)
@@ -69,10 +97,13 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         }
         else {
             pinOnMap!.annotation = annotation
+            if pinOnMap == mapView.userLocation {
+                pinOnMap?.pinTintColor = UIColor.purple
+            }
         }
         return pinOnMap
     }
-        
+    
     
     func mapViewDidStartRenderingMap(_ mapView: MKMapView, fullyRendered: Bool) {
         

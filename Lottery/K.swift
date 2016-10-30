@@ -50,6 +50,7 @@ class K: NSObject {
     static let pickerLocationsUpdatedNotification      = "LocationUpdated"
     static let allGamesNotification             = "AllGames"
     static let getAllLocationsNotification      = "GetAllLocations"
+    static let whereToPlayLocationsNotification = "WhereToPlayLocationsUpdated"
     
     // MARK: Notification info keys
     static let gamesDictionary                  = "gamesDictionary"
