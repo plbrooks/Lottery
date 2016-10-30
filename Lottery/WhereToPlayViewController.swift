@@ -21,6 +21,7 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
         super.viewDidLoad()
         mapView.delegate = self
         mapView.showsUserLocation = true
+        mapView.userTrackingMode = .follow
         NotificationCenter.default.addObserver(forName: Notification.Name(K.whereToPlayLocationsNotification), object: nil, queue: nil, using: whereToPlayNotification)
         
     }
@@ -59,47 +60,29 @@ class WhereToPlayViewController: UIViewController, MKMapViewDelegate {
             print("error = \(error.localizedDescription)")
         }
         
-                        // show the map
-
     }
     
     
-    override func viewDidAppear(_ animated: Bool) {
-        
-        super.viewDidAppear(animated)
-        
-        // Do some map housekeeping - set span, center, etc.
-        mapView.userTrackingMode = .follow
-        let span = MKCoordinateSpanMake(2.0,2.0)                        // set reasonable granularity
-        let region = MKCoordinateRegion(center: mapView.userLocation.coordinate , span: span ) // center map
-        mapView.setRegion(region, animated: false)                  // show the map
-        
-    }
     
 
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
         var pinOnMap = mapView.dequeueReusableAnnotationView(withIdentifier: "PinOnMap") as? MKPinAnnotationView
+        
         if pinOnMap == nil {
             pinOnMap = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "MapPin")
-            pinOnMap?.canShowCallout = true
-            if pinOnMap == mapView.userLocation {
+            if annotation is MKUserLocation {
                 pinOnMap?.pinTintColor = UIColor.purple
             }
-            
-            
+            pinOnMap?.canShowCallout = true
             let subtitleView = UILabel()
             subtitleView.font = subtitleView.font.withSize(12)
             subtitleView.numberOfLines = 0
             subtitleView.text = annotation.subtitle!
             pinOnMap!.detailCalloutAccessoryView = subtitleView
-            //pinOnMap?.pinTintColor = UIColor.purple
         }
         else {
             pinOnMap!.annotation = annotation
-            if pinOnMap == mapView.userLocation {
-                pinOnMap?.pinTintColor = UIColor.purple
-            }
         }
         return pinOnMap
     }
